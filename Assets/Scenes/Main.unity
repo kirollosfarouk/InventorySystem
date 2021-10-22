@@ -845,7 +845,7 @@ GameObject:
   - component: {fileID: 578191169}
   - component: {fileID: 578191168}
   m_Layer: 5
-  m_Name: NameText
+  m_Name: StateText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1244,6 +1244,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b69f27d8a4d782040ad95cb4150b05d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemIcon: {fileID: 1964813374}
+  itemNameText: {fileID: 2140209194}
+  itemDescriptionText: {fileID: 2037344837}
+  itemStatsText: {fileID: 578191168}
 --- !u!1 &833496517
 GameObject:
   m_ObjectHideFlags: 0
@@ -2328,7 +2332,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0

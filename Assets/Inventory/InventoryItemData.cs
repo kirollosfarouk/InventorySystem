@@ -1,11 +1,13 @@
 using System;
 
-
-[Serializable]
-public class InventoryItemData {
+namespace Inventory
+{
+    [Serializable]
+    public class InventoryItemData {
     
-    public int IconIndex;
-    public string Name;
-    public string Description;
-    public int Stat;
+        public int IconIndex;
+        public string Name;
+        public string Description;
+        public int Stat;
+    }
 }

@@ -1,12 +1,15 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
-public class InventoryItem : MonoBehaviour
+namespace Inventory
 {
-    public Image Background;
-    public Image Icon;
-    public TextMeshProUGUI Name;
-    public Button Button;
+    public class InventoryItem : MonoBehaviour
+    {
+        public Image Background;
+        public Image Icon;
+        public TextMeshProUGUI Name;
+        public Button Button;
 
+    }
 }
