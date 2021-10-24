@@ -1,8 +1,7 @@
-using Pooling;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Extension
+namespace Pooling
 {
     public class PooledScrollRectTransform : ScrollRect
     {
