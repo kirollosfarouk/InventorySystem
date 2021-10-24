@@ -1,11 +1,16 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using Extension;
+using Pooling;
 using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
 namespace Inventory
 {
-    public class InventoryManager : MonoBehaviour
+    public class InventoryManager : MonoBehaviour, IPoolDataSource
     {
+        public PooledScrollRectTransform pooledScrollRectTransform;
         public InventoryInfoPanel InfoPanel;
         public InventoryItem InventoryItemPrefab;
 
@@ -31,7 +36,13 @@ namespace Inventory
 
         private List<InventoryItem> Items;
 
-        void Start()
+        private void Awake()
+        {
+            pooledScrollRectTransform.DataSource = this;
+            pooledScrollRectTransform.blueprintCell = InventoryItemPrefab.GetComponent<RectTransform>();
+        }
+
+        private void Start()
         {
             // Clear existing items already in the list.
             var items = Container.GetComponentsInChildren<InventoryItem>();
@@ -40,22 +51,14 @@ namespace Inventory
             }
 
             ItemDatas = GenerateItemDatas(ItemJson, ItemGenerateScale);
-
-            // Instantiate items in the Scroll View.
-            Items = new List<InventoryItem>();
-            foreach (InventoryItemData itemData in ItemDatas) {
-                var newItem = GameObject.Instantiate<InventoryItem>(InventoryItemPrefab);
-                newItem.Icon.sprite = Icons[itemData.IconIndex];
-                newItem.Name.text = itemData.Name;
-                newItem.transform.SetParent(Container.transform);
-                newItem.Button.onClick.AddListener(() => { InventoryItemOnClick(newItem, itemData); });
-                Items.Add(newItem);       
-            }
-
-            // Select the first item.
-            InventoryItemOnClick(Items[0], ItemDatas[0]);
+            StartCoroutine(clickOnItem());
         }
 
+        private IEnumerator clickOnItem()
+        {
+            yield return new WaitForSeconds(0.5f);
+            InventoryItemOnClick(Container.GetComponentsInChildren<InventoryItem>()[0], ItemDatas[0]);
+        }
         /// <summary>
         /// Generates an item list.
         /// </summary>
@@ -75,14 +78,28 @@ namespace Inventory
             return finalItemDatas;
         }
 
-        private void InventoryItemOnClick(InventoryItem itemClicked, InventoryItemData itemData) 
+        private void InventoryItemOnClick(InventoryItem itemClicked, InventoryItemData itemData)
         {
-            foreach (var item in Items) {
+            var items = Container.GetComponentsInChildren<InventoryItem>();
+            foreach (var item in items) {
                 item.Background.color = Color.white;
             }
             itemClicked.Background.color = Color.red;
             
             InfoPanel.UpdateItemInfo(itemData,Icons[itemData.IconIndex]);
+        }
+
+        public int GetItemCount()
+        {
+            return ItemDatas.Length;
+        }
+
+        public void SetCell(ICell cell, int index)
+        {
+            InventoryItem item = cell as InventoryItem;
+            
+            Debug.Assert(item != null, nameof(item) + " != null");
+            item.ConfigureCell(ItemDatas[index], Icons[ItemDatas[index].IconIndex],()=>InventoryItemOnClick(item,ItemDatas[index]));
         }
     }
 }
