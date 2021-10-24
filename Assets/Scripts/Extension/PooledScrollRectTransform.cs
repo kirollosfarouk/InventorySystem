@@ -11,7 +11,7 @@ namespace Extension
 
         private PoolingSystem _poolingSystem;
         private Vector2 _previousAnchoredPos;
-
+        
         protected override void Start()
         {
             Initialize();
