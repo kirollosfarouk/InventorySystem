@@ -19,6 +19,11 @@ namespace Extension
 
         private void Initialize()
         {
+            if (!Application.isPlaying)
+            {
+                return;
+            }
+            
             _poolingSystem = new PoolingSystem(blueprintCell,viewport,content,DataSource);
             _previousAnchoredPos = content.anchoredPosition;
             
