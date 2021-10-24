@@ -6,9 +6,8 @@ namespace Extension
 {
     public class PooledScrollRectTransform : ScrollRect
     {
-        public IPoolDataSource DataSource;
-       
-        [SerializeField] public RectTransform blueprintCell;
+        public IPoolDataSource DataSource; 
+        public RectTransform blueprintCell;
 
         private PoolingSystem _poolingSystem;
         private Vector2 _previousAnchoredPos;

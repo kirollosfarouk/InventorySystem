@@ -95,6 +95,7 @@ namespace Pooling
             int poolSize = 0;
             float posY = 0;
 
+            _content.sizeDelta = _viewport.rect.max;
             Vector2 sizeDelta = _blueprintCell.sizeDelta;
             _cellWidth = _content.rect.width;
             _cellHeight = sizeDelta.y / sizeDelta.x * _cellWidth;
