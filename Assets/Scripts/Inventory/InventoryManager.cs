@@ -27,14 +27,8 @@ namespace Inventory
 
         [Tooltip(tooltip: "Icons referenced by ItemData.IconIndex when instantiating new items.")]
         public Sprite[] Icons;
-
-        [Serializable]
-        private class InventoryItemDatas
-        {
-            public InventoryItemData[] ItemDatas;
-        }
-
-        private InventoryItemData[] ItemDatas;
+        
+        private InventoryItemData[] _inventoryItemsData;
 
         private int _selectedItemIndex;
 
@@ -53,7 +47,7 @@ namespace Inventory
         private void Start()
         {
             ClearItemsList();
-            ItemDatas = GenerateItemDatas(ItemJson, ItemGenerateScale);
+            _inventoryItemsData = GenerateItemsData(ItemJson, ItemGenerateScale);
             StartCoroutine(SelectFirstItem());
         }
 
@@ -69,7 +63,7 @@ namespace Inventory
         private IEnumerator SelectFirstItem()
         {
             yield return new WaitForSeconds(0.5f);
-            InventoryItemOnClick(container.GetComponentsInChildren<InventoryItem>()[0], ItemDatas[0]);
+            InventoryItemOnClick(container.GetComponentsInChildren<InventoryItem>()[0], _inventoryItemsData[0]);
         }
 
         /// <summary>
@@ -78,19 +72,19 @@ namespace Inventory
         /// <param name="json">JSON to generate items from. JSON must be an array of InventoryItemData.</param>
         /// <param name="scale">Concats additional copies of the array parsed from json.</param>
         /// <returns>An array of InventoryItemData</returns>
-        private InventoryItemData[] GenerateItemDatas(string json, int scale)
+        private static InventoryItemData[] GenerateItemsData(string json, int scale)
         {
-            var itemDatas = JsonUtility.FromJson<InventoryItemDatas>(json).ItemDatas;
-            var finalItemDatas = new InventoryItemData[itemDatas.Length * scale];
-            for (var i = 0; i < itemDatas.Length; i++)
+            var itemsData = JsonUtility.FromJson<InventoryItemsData>(json).ItemDatas;
+            var finalItemsData = new InventoryItemData[itemsData.Length * scale];
+            for (int i = 0; i < itemsData.Length; i++)
             {
-                for (var j = 0; j < scale; j++)
+                for (int j = 0; j < scale; j++)
                 {
-                    finalItemDatas[i + j * itemDatas.Length] = itemDatas[i];
+                    finalItemsData[i + j * itemsData.Length] = itemsData[i];
                 }
             }
 
-            return finalItemDatas;
+            return finalItemsData;
         }
 
         private void InventoryItemOnClick(InventoryItem itemClicked, InventoryItemData itemData)
@@ -125,7 +119,7 @@ namespace Inventory
 
         public int GetItemCount()
         {
-            return ItemDatas.Length;
+            return _inventoryItemsData.Length;
         }
 
         public void SetCell(ICell cell, int index)
@@ -133,8 +127,8 @@ namespace Inventory
             InventoryItem item = cell as InventoryItem;
 
             Debug.Assert(item != null, nameof(item) + " != null");
-            item.ConfigureCell(ItemDatas[index],index, Icons[ItemDatas[index].IconIndex],
-                () => InventoryItemOnClick(item, ItemDatas[index]));
+            item.ConfigureCell(_inventoryItemsData[index],index, Icons[_inventoryItemsData[index].IconIndex],
+                () => InventoryItemOnClick(item, _inventoryItemsData[index]));
         }
     }
 }

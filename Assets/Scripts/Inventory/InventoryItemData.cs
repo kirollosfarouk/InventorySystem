@@ -10,4 +10,11 @@ namespace Inventory
         public string Description;
         public int Stat;
     }
+    
+    [Serializable]
+    public class InventoryItemsData
+    {
+        public InventoryItemData[] ItemDatas;
+    }
+
 }
