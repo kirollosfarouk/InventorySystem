@@ -12,10 +12,10 @@ namespace Inventory
     public class InventoryManager : MonoBehaviour, IPoolDataSource
     {
         public PooledScrollRectTransform pooledScrollRectTransform;
-        public InventoryInfoPanel InfoPanel;
-        public InventoryItem InventoryItemPrefab;
+        public InventoryInfoPanel infoPanel;
+        public InventoryItem inventoryItemPrefab;
 
-        public GameObject Container;
+        public GameObject container;
 
         [Tooltip(tooltip: "Loads the list using this format.")] [Multiline]
         public string ItemJson;
@@ -40,12 +40,15 @@ namespace Inventory
 
         private void Awake()
         {
-            pooledScrollRectTransform.DataSource = this;
-            pooledScrollRectTransform.blueprintCell = InventoryItemPrefab.GetComponent<RectTransform>();
-            pooledScrollRectTransform.onValueChanged.AddListener(OnValueChanged);
+            InitPooledScrollRect();
         }
 
-       
+        private void InitPooledScrollRect()
+        {
+            pooledScrollRectTransform.DataSource = this;
+            pooledScrollRectTransform.blueprintCell = inventoryItemPrefab.GetComponent<RectTransform>();
+            pooledScrollRectTransform.onValueChanged.AddListener(OnValueChanged);
+        }
 
         private void Start()
         {
@@ -56,7 +59,7 @@ namespace Inventory
 
         private void ClearItemsList()
         {
-            var items = Container.GetComponentsInChildren<InventoryItem>();
+            var items = container.GetComponentsInChildren<InventoryItem>();
             foreach (InventoryItem item in items)
             {
                 Destroy(item.gameObject);
@@ -66,7 +69,7 @@ namespace Inventory
         private IEnumerator SelectFirstItem()
         {
             yield return new WaitForSeconds(0.5f);
-            InventoryItemOnClick(Container.GetComponentsInChildren<InventoryItem>()[0], ItemDatas[0]);
+            InventoryItemOnClick(container.GetComponentsInChildren<InventoryItem>()[0], ItemDatas[0]);
         }
 
         /// <summary>
@@ -92,32 +95,34 @@ namespace Inventory
 
         private void InventoryItemOnClick(InventoryItem itemClicked, InventoryItemData itemData)
         {
-            var items = Container.GetComponentsInChildren<InventoryItem>();
+            var items = container.GetComponentsInChildren<InventoryItem>();
 
-            foreach (InventoryItem item in items)
-            {
-                item.SetSelected(false);
-            }
+            ClearSelectedItem(items);
 
             itemClicked.SetSelected(true);
 
             _selectedItemIndex = itemClicked.itemIndex;
             
-            InfoPanel.UpdateItemInfo(itemData, Icons[itemData.IconIndex]);
+            infoPanel.UpdateItemInfo(itemData, Icons[itemData.IconIndex]);
         }
        
         private void OnValueChanged(Vector2 arg0)
         {
-            var items = Container.GetComponentsInChildren<InventoryItem>();
+            var items = container.GetComponentsInChildren<InventoryItem>();
 
+            ClearSelectedItem(items);
+
+            items.FirstOrDefault(x=> x.itemIndex==_selectedItemIndex)?.SetSelected(true);
+        }
+
+        private static void ClearSelectedItem(InventoryItem[] items)
+        {
             foreach (InventoryItem item in items)
             {
                 item.SetSelected(false);
             }
-
-            items.FirstOrDefault(x=> x.itemIndex==_selectedItemIndex)?.SetSelected(true);
         }
-        
+
         public int GetItemCount()
         {
             return ItemDatas.Length;
