@@ -372,6 +372,7 @@ MonoBehaviour:
   Icon: {fileID: 8701206775993556585}
   Name: {fileID: 3476356805178039162}
   Button: {fileID: 5462570301140289662}
+  itemIndex: 0
 --- !u!1 &6094784086906774804
 GameObject:
   m_ObjectHideFlags: 0
