@@ -9,24 +9,25 @@ namespace Inventory
 {
     public class InventoryItem : MonoBehaviour, ICell
     {
-        public Image Background;
-        public Image Icon;
-        public TextMeshProUGUI Name;
-        public Button Button;
+        [SerializeField] private Image background;
+        [SerializeField] private Image icon;
+        [SerializeField] private TextMeshProUGUI itemNameText;
+        [SerializeField] private Button button;
+        [SerializeField] private InventoryItemIcons icons;
+        
+        [HideInInspector] public int itemIndex;
 
-        public int itemIndex;
-
-        public void ConfigureCell(InventoryItemData itemData, int index, Sprite image, UnityAction onClick)
+        public void ConfigureCell(InventoryItemData itemData, int index, UnityAction onClick)
         {
             itemIndex = index;
-            Icon.sprite = image;
-            Name.text = itemData.Name;
-            Button.onClick.AddListener(onClick);
+            icon.sprite = icons.itemSprites[itemData.IconIndex];
+            itemNameText.text = itemData.Name;
+            button.onClick.AddListener(onClick);
         }
 
         public void SetSelected(bool isSelected)
         {
-            Background.color = isSelected ? Color.red : Color.white;
+            background.color = isSelected ? Color.red : Color.white;
         }
     }
 }

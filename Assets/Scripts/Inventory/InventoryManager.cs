@@ -11,9 +11,9 @@ namespace Inventory
 {
     public class InventoryManager : MonoBehaviour, IPoolDataSource
     {
-        public PooledScrollRectTransform pooledScrollRectTransform;
-        public InventoryInfoPanel infoPanel;
-        public InventoryItem inventoryItemPrefab;
+        [SerializeField] private PooledScrollRectTransform pooledScrollRectTransform;
+        [SerializeField] private  InventoryInfoPanel infoPanel;
+        [SerializeField] private  InventoryItem inventoryItemPrefab;
 
         public GameObject container;
 
@@ -24,9 +24,6 @@ namespace Inventory
             tooltip:
             "This is used in generating the items list. The number of additional copies to concat the list parsed from ItemJson.")]
         public int ItemGenerateScale = 10;
-
-        [Tooltip(tooltip: "Icons referenced by ItemData.IconIndex when instantiating new items.")]
-        public Sprite[] Icons;
         
         private InventoryItemData[] _inventoryItemsData;
 
@@ -97,7 +94,7 @@ namespace Inventory
 
             _selectedItemIndex = itemClicked.itemIndex;
             
-            infoPanel.UpdateItemInfo(itemData, Icons[itemData.IconIndex]);
+            infoPanel.UpdateItemInfo(itemData);
         }
        
         private void OnValueChanged(Vector2 arg0)
@@ -127,7 +124,7 @@ namespace Inventory
             InventoryItem item = cell as InventoryItem;
 
             Debug.Assert(item != null, nameof(item) + " != null");
-            item.ConfigureCell(_inventoryItemsData[index],index, Icons[_inventoryItemsData[index].IconIndex],
+            item.ConfigureCell(_inventoryItemsData[index], index,
                 () => InventoryItemOnClick(item, _inventoryItemsData[index]));
         }
     }

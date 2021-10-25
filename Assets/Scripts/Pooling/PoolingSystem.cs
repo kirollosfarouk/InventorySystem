@@ -72,22 +72,9 @@ namespace Pooling
 
         private void CreateCellPool()
         {
-            //Reseting Pool
-            if (_cellPool != null)
-            {
-                _cellPool.ForEach((RectTransform item) => UnityEngine.Object.Destroy(item.gameObject));
-                _cellPool.Clear();
-                _cachedCells.Clear();
-            }
-            else
-            {
-                _cachedCells = new List<ICell>();
-                _cellPool = new List<RectTransform>();
-            }
-
-            //Set the prototype cell active and set cell anchor as top 
+            ResetPool();
+            
             _blueprintCell.gameObject.SetActive(true);
-
             SetTopAnchor(_blueprintCell);
 
             //Temps
@@ -95,16 +82,27 @@ namespace Pooling
             int poolSize = 0;
             float posY = 0;
 
-            _content.sizeDelta = _viewport.rect.max;
+            Rect viewportRect = _viewport.rect;
+            _content.sizeDelta = viewportRect.max;
             Vector2 sizeDelta = _blueprintCell.sizeDelta;
             _cellWidth = _content.rect.width;
             _cellHeight = sizeDelta.y / sizeDelta.x * _cellWidth;
+            
+            float requiredCoverage = RequiredCoverage(viewportRect, out int minPoolSize);
 
-            //Get the required pool coverage and mininum size for the Cell pool
-            float requiredCoverage = MIN_POOL_COVERAGE * _viewport.rect.height;
-            int minPoolSize = Math.Min(_minPoolSize, _dataSource.GetItemCount());
+            CreatePoolCells(poolSize, minPoolSize, currentPoolCoverage, requiredCoverage, posY);
+        }
 
-            //create cells untill the Pool area is covered and pool size is the minimum required
+        private float RequiredCoverage(Rect viewportRect, out int minPoolSize)
+        {
+            float requiredCoverage = MIN_POOL_COVERAGE * viewportRect.height;
+            minPoolSize = Math.Min(_minPoolSize, _dataSource.GetItemCount());
+            return requiredCoverage;
+        }
+
+        private void CreatePoolCells(int poolSize, int minPoolSize, float currentPoolCoverage, float requiredCoverage,
+            float posY)
+        {
             while ((poolSize < minPoolSize || currentPoolCoverage < requiredCoverage) &&
                    poolSize < _dataSource.GetItemCount())
             {
@@ -129,6 +127,21 @@ namespace Pooling
 
                 //Update the Pool size
                 poolSize++;
+            }
+        }
+
+        private void ResetPool()
+        {
+            if (_cellPool != null)
+            {
+                _cellPool.ForEach((RectTransform item) => UnityEngine.Object.Destroy(item.gameObject));
+                _cellPool.Clear();
+                _cachedCells.Clear();
+            }
+            else
+            {
+                _cachedCells = new List<ICell>();
+                _cellPool = new List<RectTransform>();
             }
         }
 
@@ -212,8 +225,8 @@ namespace Pooling
             }
 
             _cellPool.ForEach(cell =>
-                cell.anchoredPosition -= n * Vector2.up * _cellPool[_topMostCellIndex].sizeDelta.y);
-            _content.anchoredPosition += n * Vector2.up * _cellPool[_topMostCellIndex].sizeDelta.y;
+                cell.anchoredPosition -= Vector2.up * (n * _cellPool[_topMostCellIndex].sizeDelta.y));
+            _content.anchoredPosition += Vector2.up * (n * _cellPool[_topMostCellIndex].sizeDelta.y);
             _caching = false;
             return new Vector2(0, n * _cellPool[_topMostCellIndex].sizeDelta.y);
         }

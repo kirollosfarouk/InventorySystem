@@ -368,10 +368,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab982d58559817b4f8123a0bec6153ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Background: {fileID: 3524837759571232111}
-  Icon: {fileID: 8701206775993556585}
-  Name: {fileID: 3476356805178039162}
-  Button: {fileID: 5462570301140289662}
+  background: {fileID: 3524837759571232111}
+  icon: {fileID: 8701206775993556585}
+  itemNameText: {fileID: 3476356805178039162}
+  button: {fileID: 5462570301140289662}
+  icons: {fileID: 11400000, guid: f406f5700f305594e8cd62c2961380d7, type: 2}
   itemIndex: 0
 --- !u!1 &6094784086906774804
 GameObject:

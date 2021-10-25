@@ -10,10 +10,10 @@ namespace Inventory
         [SerializeField] private TextMeshProUGUI itemNameText;
         [SerializeField] private TextMeshProUGUI itemDescriptionText;
         [SerializeField] private TextMeshProUGUI itemStatsText;
-
-        public void UpdateItemInfo(InventoryItemData itemData, Sprite itemSprite)
+        [SerializeField] private InventoryItemIcons icons;
+        public void UpdateItemInfo(InventoryItemData itemData)
         {
-            itemIcon.sprite = itemSprite;
+            itemIcon.sprite = icons.itemSprites[itemData.IconIndex];
             itemNameText.text = itemData.Name;
             itemDescriptionText.text = itemData.Description;
             itemStatsText.text = itemData.Stat.ToString();
